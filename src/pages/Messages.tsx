@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
-import { Search, Send, User, Loader2, ChevronLeft, MoreVertical, CheckCheck, Smile, Paperclip, Image as ImageIcon, Check, Clock, Phone, Video, Mic, Square, Volume2, Play, Pause } from 'lucide-react';
+import { Search, Send, User, Loader2, ChevronLeft, MoreVertical, CheckCheck, Smile, Paperclip, Image as ImageIcon, Check, Clock, Phone, Video, Mic, Square, Volume2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '../utils/cn';
 import { useSearchParams } from 'react-router-dom';
