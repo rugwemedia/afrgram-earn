@@ -1,0 +1,61 @@
+@import "tailwindcss";
+
+@theme {
+    --color-primary: #3b82f6;
+    --color-primary-foreground: #ffffff;
+
+    --color-background: #0a0a0a;
+    --color-foreground: #fafafa;
+
+    --color-card: #121212;
+    --color-card-foreground: #fafafa;
+
+    --color-muted: #1e1e1e;
+    --color-muted-foreground: #a1a1aa;
+
+    --color-accent: #27272a;
+    --color-accent-foreground: #fafafa;
+
+    --color-wallet-balance: #10b981;
+    --color-wallet-withdrawn: #6366f1;
+    --color-wallet-available: #f59e0b;
+
+    --radius-lg: 0.75rem;
+    --radius-md: 0.5rem;
+    --radius-sm: 0.25rem;
+}
+
+@layer base {
+    * {
+        @apply border-accent;
+    }
+
+    body {
+        @apply bg-background text-foreground antialiased font-sans;
+    }
+}
+
+@layer components {
+    .glass {
+        @apply bg-card/60 backdrop-blur-xl border border-white/10 shadow-2xl;
+    }
+
+    .glass-card {
+        @apply bg-white/[0.03] backdrop-blur-md border border-white/10 shadow-lg transition-all duration-300;
+    }
+
+    .glass-card:hover {
+        @apply bg-white/[0.05] border-white/20 scale-[1.01];
+    }
+
+    .btn-premium {
+        @apply relative overflow-hidden px-6 py-3 rounded-lg font-bold transition-all duration-300 active:scale-95;
+        background: linear-gradient(135deg, var(--color-primary) 0%, #1d4ed8 100%);
+        box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+    }
+
+    .btn-premium:hover {
+        @apply -translate-y-1;
+        box-shadow: 0 8px 25px rgba(59, 130, 246, 0.5);
+    }
+}
