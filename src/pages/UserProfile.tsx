@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { Loader2, ArrowLeft, MapPin, Calendar, MessageSquare } from 'lucide-react';
 import { PostCard } from '../components/PostCard';
+import { cn } from '../utils/cn';
 
 interface Profile {
     id: string;
@@ -35,10 +36,27 @@ export function UserProfile() {
     const [posts, setPosts] = useState<Post[]>([]);
     const [loading, setLoading] = useState(true);
     const [stats, setStats] = useState({ followers: 0, following: 0, posts: 0 });
+    const [isLive, setIsLive] = useState(false);
 
     useEffect(() => {
         if (userId) {
             fetchProfileData();
+
+            // Real-time Live Status Listener
+            const sub = supabase
+                .channel(`profile_live_${userId}`)
+                .on('postgres_changes', {
+                    event: '*',
+                    schema: 'public',
+                    table: 'live_sessions',
+                    filter: `host_id=eq.${userId}`
+                }, (payload) => {
+                    if (payload.eventType === 'INSERT') setIsLive(true);
+                    if (payload.eventType === 'DELETE') setIsLive(false);
+                })
+                .subscribe();
+
+            return () => { supabase.removeChannel(sub); };
         }
     }, [userId]);
 
@@ -85,6 +103,14 @@ export function UserProfile() {
                 posts: postsData?.length || 0
             });
 
+            // 4. Check Live Status
+            const { data: liveData } = await supabase
+                .from('live_sessions')
+                .select('id')
+                .eq('host_id', userId)
+                .maybeSingle();
+            setIsLive(!!liveData);
+
         } catch (error) {
             console.error('Error fetching profile:', error);
             // toast.error('Failed to load profile');
@@ -129,12 +155,19 @@ export function UserProfile() {
 
                 <div className="relative mt-12 flex flex-col items-center text-center">
                     <div className="w-24 h-24 rounded-full p-1 bg-background mb-4 relative">
-                        <div className="w-full h-full rounded-full overflow-hidden bg-white/10">
+                        <div className={cn(
+                            "w-full h-full rounded-full overflow-hidden transition-all",
+                            isLive ? "ring-4 ring-red-600 animate-pulse" : "bg-white/10"
+                        )}>
                             <img src={profile.avatar_url || 'https://via.placeholder.com/150'} alt={profile.full_name} className="w-full h-full object-cover" />
                         </div>
-                        {profile.last_seen_at && (new Date().getTime() - new Date(profile.last_seen_at).getTime() < 300000) && (
+                        {isLive ? (
+                            <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 bg-red-600 text-[8px] font-black text-white px-2 py-0.5 rounded-full uppercase tracking-widest border-2 border-[#0a0a0a] z-20">
+                                Live
+                            </div>
+                        ) : profile.last_seen_at && (new Date().getTime() - new Date(profile.last_seen_at).getTime() < 300000) ? (
                             <div className="absolute bottom-1 right-1 w-6 h-6 bg-emerald-500 border-4 border-[#0a0a0a] rounded-full shadow-[0_0_15px_rgba(16,185,129,0.5)] z-10" />
-                        )}
+                        ) : null}
                     </div>
 
                     <div className="flex flex-col items-center">
@@ -152,6 +185,12 @@ export function UserProfile() {
                                     <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
                                     Active Now
                                 </span>
+                            )}
+                            {isLive && (
+                                <Link to="/live" className="flex items-center gap-1.5 text-[10px] bg-red-600 text-white px-2 py-0.5 rounded-full border border-red-600/20 uppercase tracking-widest font-black shadow-[0_0_15px_rgba(220,38,38,0.5)]">
+                                    <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" />
+                                    Live Now
+                                </Link>
                             )}
                         </h1>
                         <p className="text-primary font-medium mb-6">@{profile.username}</p>
@@ -209,7 +248,8 @@ export function UserProfile() {
                                 username: profile.username,
                                 avatar: profile.avatar_url,
                                 verified: (profile as any).is_verified,
-                                id: profile.id
+                                id: profile.id,
+                                isLive: isLive
                             }}
                             content={post.content}
                             image={post.image}

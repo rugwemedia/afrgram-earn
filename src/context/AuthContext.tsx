@@ -6,10 +6,13 @@ import { supabase } from '../lib/supabase';
 interface AuthContextType {
     user: User | null;
     session: Session | null;
+    profile: any | null;
+    balance: number;
     loading: boolean;
     signOut: () => Promise<void>;
     require2FA: boolean;
     setRequire2FA: (val: boolean) => void;
+    refreshProfile: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -17,8 +20,53 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [user, setUser] = useState<User | null>(null);
     const [session, setSession] = useState<Session | null>(null);
+    const [profile, setProfile] = useState<any | null>(null);
+    const [balance, setBalance] = useState<number>(0);
     const [loading, setLoading] = useState(true);
     const [require2FA, setRequire2FA] = useState(false);
+
+    const refreshProfile = async () => {
+        if (!user) {
+            setProfile(null);
+            setBalance(0);
+            return;
+        }
+
+        const { data, error } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', user.id)
+            .single();
+
+        if (data && !error) {
+            setProfile(data);
+            setBalance(Number(data.balance) || 0);
+        }
+    };
+
+    useEffect(() => {
+        if (user) {
+            refreshProfile();
+
+            // Subscribe to profile changes
+            const channel = supabase
+                .channel(`profile:${user.id}`)
+                .on('postgres_changes', {
+                    event: 'UPDATE',
+                    schema: 'public',
+                    table: 'profiles',
+                    filter: `id=eq.${user.id}`
+                }, (payload: any) => {
+                    setProfile(payload.new);
+                    setBalance(Number(payload.new.balance) || 0);
+                })
+                .subscribe();
+
+            return () => {
+                supabase.removeChannel(channel);
+            };
+        }
+    }, [user?.id]);
 
     useEffect(() => {
         // Get initial session
@@ -66,7 +114,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
 
     return (
-        <AuthContext.Provider value={{ user, session, loading, signOut, require2FA, setRequire2FA }}>
+        <AuthContext.Provider value={{ user, session, profile, balance, loading, signOut, require2FA, setRequire2FA, refreshProfile }}>
             {children}
         </AuthContext.Provider>
     );

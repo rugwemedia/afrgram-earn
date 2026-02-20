@@ -20,7 +20,10 @@ import { Messages } from './pages/Messages';
 import { PostPage } from './pages/PostPage';
 import { ResetPassword } from './pages/ResetPassword';
 import { TasksPage } from './pages/TasksPage';
+import { Live } from './pages/Live';
+import { CallOverlay } from './components/CallOverlay';
 import { AnalyticsTracker } from './components/AnalyticsTracker';
+import { SupportWidget } from './components/SupportWidget';
 
 function App() {
   const { user, loading } = useAuth();
@@ -44,6 +47,8 @@ function App() {
 
   return (
     <>
+      <CallOverlay />
+      <SupportWidget />
       <AnalyticsTracker />
       <Routes>
         {/* Public Routes */}
@@ -61,6 +66,7 @@ function App() {
                 {isAdmin && <Route path="/admin" element={<AdminPanel />} />}
                 <Route path="/feed" element={<SocialFeed />} />
                 <Route path="/reels" element={<Reels />} />
+                <Route path="/live" element={<Live />} />
                 <Route path="/friends" element={<Friends />} />
                 <Route path="/profile/:userId" element={<UserProfile />} />
                 <Route path="/task/:taskId" element={<TaskPage />} />

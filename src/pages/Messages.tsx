@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
-import { Search, Send, User, Loader2, ChevronLeft, MoreVertical, CheckCheck, Smile, Paperclip, Image as ImageIcon, Check, Clock } from 'lucide-react';
+import { Search, Send, User, Loader2, ChevronLeft, MoreVertical, CheckCheck, Smile, Paperclip, Image as ImageIcon, Check, Clock, Phone, Video, Mic, Square, Volume2, Play, Pause } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '../utils/cn';
 import { useSearchParams } from 'react-router-dom';
@@ -20,7 +20,7 @@ interface Message {
     expires_at?: string;
     view_once?: boolean;
     media_url?: string;
-    media_type?: 'image' | 'video' | 'file';
+    media_type?: 'image' | 'video' | 'file' | 'voice';
 }
 
 interface Profile {
@@ -52,6 +52,31 @@ export function Messages() {
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
     const [showList, setShowList] = useState(true); // For mobile view
     const messagesEndRef = useRef<HTMLDivElement>(null);
+
+    // Voice Recording
+    const [isRecording, setIsRecording] = useState(false);
+    const [recordingTime, setRecordingTime] = useState(0);
+    const mediaRecorder = useRef<MediaRecorder | null>(null);
+    const audioChunks = useRef<Blob[]>([]);
+    const timerRef = useRef<any>(null);
+
+    useEffect(() => {
+        if (isRecording) {
+            timerRef.current = setInterval(() => {
+                setRecordingTime(prev => prev + 1);
+            }, 1000);
+        } else {
+            clearInterval(timerRef.current);
+            setRecordingTime(0);
+        }
+        return () => clearInterval(timerRef.current);
+    }, [isRecording]);
+
+    const formatTime = (seconds: number) => {
+        const mins = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        return `${mins}:${secs.toString().padStart(2, '0')}`;
+    };
 
     useEffect(() => {
         if (user) {
@@ -160,6 +185,32 @@ export function Messages() {
         }
     };
 
+    const initiateCall = async (type: 'audio' | 'video') => {
+        if (!selectedProfile || !user) return;
+
+        const roomId = `room_${Math.random().toString(36).substring(7)}`;
+        const { data: newCallData, error } = await supabase
+            .from('calls')
+            .insert({
+                caller_id: user.id,
+                receiver_id: selectedProfile.id,
+                call_type: type,
+                room_id: roomId,
+                status: 'ringing'
+            })
+            .select('*')
+            .single();
+
+        if (error) {
+            alert('Could not start call: ' + error.message);
+        } else {
+            // Instant UI trigger for the caller
+            window.dispatchEvent(new CustomEvent('initiate-call', {
+                detail: { ...newCallData, receiver_profile: selectedProfile }
+            }));
+        }
+    };
+
     const fetchMessages = async (partnerId: string) => {
         const { data, error } = await supabase
             .from('messages')
@@ -197,11 +248,64 @@ export function Messages() {
         };
     };
 
-    const handleFileUpload = (url: string, type: 'image' | 'video' | 'file') => {
+    const startRecording = async () => {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            mediaRecorder.current = new MediaRecorder(stream);
+            audioChunks.current = [];
+
+            mediaRecorder.current.ondataavailable = (e) => {
+                if (e.data.size > 0) audioChunks.current.push(e.data);
+            };
+
+            mediaRecorder.current.onstop = async () => {
+                const audioBlob = new Blob(audioChunks.current, { type: 'audio/webm' });
+                await uploadVoiceNote(audioBlob);
+                stream.getTracks().forEach(track => track.stop());
+            };
+
+            mediaRecorder.current.start();
+            setIsRecording(true);
+        } catch (err) {
+            console.error("Mic access denied:", err);
+            alert("Please allow microphone access to record voice notes.");
+        }
+    };
+
+    const stopRecording = () => {
+        if (mediaRecorder.current && isRecording) {
+            mediaRecorder.current.stop();
+            setIsRecording(false);
+        }
+    };
+
+    const uploadVoiceNote = async (blob: Blob) => {
+        const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+        const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
+
+        const formData = new FormData();
+        formData.append('file', blob);
+        formData.append('upload_preset', uploadPreset);
+
+        try {
+            const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/auto/upload`, {
+                method: 'POST',
+                body: formData,
+            });
+            const data = await res.json();
+            if (data.secure_url) {
+                await sendMessage(data.secure_url, 'voice');
+            }
+        } catch (err) {
+            console.error("Voice upload failed:", err);
+        }
+    };
+
+    const handleFileUpload = (url: string, type: 'image' | 'video' | 'file' | 'voice') => {
         sendMessage(url, type);
     };
 
-    const sendMessage = async (mediaUrl?: string, mediaType?: 'image' | 'video' | 'file') => {
+    const sendMessage = async (mediaUrl?: string, mediaType?: 'image' | 'video' | 'file' | 'voice') => {
         if (!input.trim() && !mediaUrl) return;
         if (!selectedProfile || !user) return;
 
@@ -388,9 +492,25 @@ export function Messages() {
                                     </span>
                                 </div>
                             </div>
-                            <button className="p-2 text-muted-foreground hover:text-white transition-colors">
-                                <MoreVertical size={20} />
-                            </button>
+                            <div className="flex items-center gap-1">
+                                <button
+                                    onClick={() => initiateCall('audio')}
+                                    className="p-3 text-muted-foreground hover:text-emerald-500 hover:bg-emerald-500/10 rounded-xl transition-all"
+                                    title="Voice Call"
+                                >
+                                    <Phone size={20} />
+                                </button>
+                                <button
+                                    onClick={() => initiateCall('video')}
+                                    className="p-3 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-xl transition-all"
+                                    title="Video Call"
+                                >
+                                    <Video size={20} />
+                                </button>
+                                <button className="p-3 text-muted-foreground hover:text-white hover:bg-white/5 rounded-xl transition-all">
+                                    <MoreVertical size={20} />
+                                </button>
+                            </div>
                         </div>
 
                         {/* Messages Area */}
@@ -440,6 +560,13 @@ export function Messages() {
                                                         </div>
                                                     ) : msg.media_type === 'video' ? (
                                                         <video src={msg.media_url} controls className="w-full" />
+                                                    ) : msg.media_type === 'voice' ? (
+                                                        <div className="flex items-center gap-2 p-2 min-w-[180px]">
+                                                            <div className="w-8 h-8 rounded-full bg-black/20 flex items-center justify-center">
+                                                                <Volume2 size={16} />
+                                                            </div>
+                                                            <audio src={msg.media_url} controls className="h-8 max-w-[140px] voice-player-mini" />
+                                                        </div>
                                                     ) : (
                                                         <img src={msg.media_url} className="w-full h-full object-cover" />
                                                     )}
@@ -527,6 +654,24 @@ export function Messages() {
                                     <Clock size={20} />
                                 </button>
                                 <div className="relative">
+                                    <button
+                                        onClick={isRecording ? stopRecording : startRecording}
+                                        className={cn(
+                                            "p-3 rounded-xl transition-all active:scale-95 animate-in zoom-in",
+                                            isRecording ? "bg-red-500 text-white animate-pulse" : "bg-white/5 text-muted-foreground hover:bg-white/10"
+                                        )}
+                                        title={isRecording ? "Stop Recording" : "Record Voice Note"}
+                                    >
+                                        {isRecording ? <Square size={20} /> : <Mic size={20} />}
+                                    </button>
+
+                                    {isRecording && (
+                                        <div className="flex items-center gap-2 px-3 bg-red-500/10 rounded-xl border border-red-500/20">
+                                            <div className="w-2 h-2 bg-red-500 rounded-full animate-ping" />
+                                            <span className="text-xs font-black text-red-500 tabular-nums">{formatTime(recordingTime)}</span>
+                                        </div>
+                                    )}
+
                                     <button
                                         onClick={() => setShowEmojiPicker(!showEmojiPicker)}
                                         className={cn(

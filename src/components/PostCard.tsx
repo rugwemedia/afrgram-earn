@@ -13,6 +13,7 @@ interface PostProps {
         verified?: boolean;
         id?: string;
         lastSeen?: string;
+        isLive?: boolean;
     };
     content: string;
     image?: string;
@@ -40,12 +41,19 @@ export function PostCard({ id, user, content, image, likes, comments, timestamp,
                 <div className="flex items-center gap-3">
                     {user.id ? (
                         <Link to={`/profile/${user.id}`} className="block shrink-0 relative">
-                            <div className="w-10 h-10 rounded-full overflow-hidden bg-white/10 ring-2 ring-transparent hover:ring-primary/50 transition-all">
+                            <div className={cn(
+                                "w-10 h-10 rounded-full overflow-hidden bg-white/10 ring-2 transition-all",
+                                user.isLive ? "ring-red-600 animate-pulse" : "ring-transparent hover:ring-primary/50"
+                            )}>
                                 <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
                             </div>
-                            {isOnline && (
+                            {user.isLive ? (
+                                <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 bg-red-600 text-[6px] font-black text-white px-1.5 py-0.5 rounded-full uppercase tracking-tighter border border-[#0a0a0a]">
+                                    Live
+                                </div>
+                            ) : isOnline ? (
                                 <div className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 border-2 border-[#0a0a0a] rounded-full shadow-[0_0_10px_rgba(16,185,129,0.5)] z-10" />
-                            )}
+                            ) : null}
                         </Link>
                     ) : (
                         <div className="w-10 h-10 rounded-full overflow-hidden bg-white/10 shrink-0 relative">

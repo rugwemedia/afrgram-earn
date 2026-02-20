@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Heart, MessageCircle, Share2, MoreHorizontal, Music2, Volume2, VolumeX, Play } from 'lucide-react';
+import { Heart, MessageCircle, BookmarkPlus, Music2, Volume2, VolumeX, Play, X, Send, Loader2, CheckCheck } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '../utils/cn';
 import { supabase } from '../lib/supabase';
@@ -18,6 +18,17 @@ export function ReelPlayer({ reel, isActive }: ReelProps) {
     const [isMuted, setIsMuted] = useState(false);
     const [isPlaying, setIsPlaying] = useState(false);
     const [showHeartAnimation, setShowHeartAnimation] = useState(false);
+
+    // Comment drawer
+    const [showComments, setShowComments] = useState(false);
+    const [comments, setComments] = useState<any[]>([]);
+    const [commentLoading, setCommentLoading] = useState(false);
+    const [newComment, setNewComment] = useState('');
+    const [commentsCount, setCommentsCount] = useState(Number(reel.comments_count || 0));
+
+    // Share to story
+    const [sharingToStory, setSharingToStory] = useState(false);
+    const [sharedToStory, setSharedToStory] = useState(false);
 
     useEffect(() => {
         if (isActive && videoRef.current) {
@@ -66,6 +77,69 @@ export function ReelPlayer({ reel, isActive }: ReelProps) {
         if (!isLiked) handleToggleLike();
         setShowHeartAnimation(true);
         setTimeout(() => setShowHeartAnimation(false), 800);
+    };
+
+    const handleOpenComments = async () => {
+        setShowComments(true);
+        if (comments.length > 0) return;
+        setCommentLoading(true);
+        try {
+            const { data, error } = await supabase
+                .from('reel_comments')
+                .select('id, content, created_at, profiles (full_name, avatar_url)')
+                .eq('reel_id', reel.id)
+                .order('created_at', { ascending: true });
+            if (error) throw error;
+            setComments((data as any[] || []).map(c => ({
+                ...c,
+                profiles: Array.isArray(c.profiles) ? c.profiles[0] : c.profiles
+            })));
+        } catch (err) {
+            console.error('Error fetching reel comments:', err);
+        } finally {
+            setCommentLoading(false);
+        }
+    };
+
+    const handleAddComment = async () => {
+        if (!user || !newComment.trim()) return;
+        setCommentLoading(true);
+        try {
+            const { data, error } = await supabase
+                .from('reel_comments')
+                .insert({ reel_id: reel.id, user_id: user.id, content: newComment.trim() })
+                .select('id, content, created_at, profiles (full_name, avatar_url)')
+                .single();
+            if (error) throw error;
+            const c = { ...data, profiles: Array.isArray((data as any).profiles) ? (data as any).profiles[0] : (data as any).profiles };
+            setComments(prev => [...prev, c]);
+            setNewComment('');
+            setCommentsCount(prev => prev + 1);
+        } catch (err: any) {
+            console.error('Reel comment error:', err);
+        } finally {
+            setCommentLoading(false);
+        }
+    };
+
+    const handleShareToStory = async () => {
+        if (!user || sharingToStory || sharedToStory) return;
+        setSharingToStory(true);
+        try {
+            const { error } = await supabase.from('stories').insert({
+                user_id: user.id,
+                media_url: reel.video_url,
+                media_type: 'video',
+                caption: reel.caption ? `🎬 ${reel.caption}` : '🎬 Shared from Reels',
+            });
+            if (error) throw error;
+            setSharedToStory(true);
+            setTimeout(() => setSharedToStory(false), 3000);
+        } catch (err: any) {
+            alert('Share failed: ' + (err.message || 'Check stories table setup'));
+        } finally {
+            setSharingToStory(false);
+        }
     };
 
     const togglePlay = () => {
@@ -135,21 +209,88 @@ export function ReelPlayer({ reel, isActive }: ReelProps) {
                 <SideAction
                     icon={Heart}
                     count={likesCount.toString()}
-                    color={isLiked ? "text-red-500 fill-red-500" : "hover:text-red-500"}
+                    color={isLiked ? 'text-red-500 fill-red-500' : 'hover:text-red-500'}
                     onClick={handleToggleLike}
                 />
-                <SideAction icon={MessageCircle} count={reel.comments_count?.toString() || "0"} color="hover:text-primary" />
                 <SideAction
-                    icon={Share2}
-                    count="Share"
-                    color="hover:text-emerald-500"
-                    onClick={() => {
-                        navigator.clipboard.writeText(`${window.location.origin}/reels?id=${reel.id}`);
-                        alert('Reel link copied!');
-                    }}
+                    icon={MessageCircle}
+                    count={commentsCount.toString()}
+                    color="hover:text-primary"
+                    onClick={handleOpenComments}
                 />
-                <SideAction icon={MoreHorizontal} />
+                <SideAction
+                    icon={sharedToStory ? CheckCheck : BookmarkPlus}
+                    count={sharedToStory ? 'Added!' : sharingToStory ? '…' : 'Story'}
+                    color={sharedToStory ? 'text-emerald-500' : 'hover:text-emerald-500'}
+                    onClick={handleShareToStory}
+                />
             </div>
+
+            {/* Comment Drawer */}
+            <AnimatePresence>
+                {showComments && (
+                    <>
+                        <motion.div
+                            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                            onClick={() => setShowComments(false)}
+                            className="absolute inset-0 bg-black/40 z-40"
+                        />
+                        <motion.div
+                            initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }}
+                            transition={{ type: 'spring', damping: 25, stiffness: 220 }}
+                            className="absolute bottom-0 left-0 right-0 bg-[#0f0f0f] rounded-t-[2.5rem] z-50 max-h-[65vh] flex flex-col"
+                        >
+                            <div className="p-4 flex items-center justify-between px-6 pt-5">
+                                <div className="w-10 h-1 bg-white/10 rounded-full absolute top-3 left-1/2 -translate-x-1/2" />
+                                <h3 className="text-base font-black text-white uppercase tracking-widest">{commentsCount} Comments</h3>
+                                <button onClick={() => setShowComments(false)} className="p-1.5 bg-white/5 rounded-full text-white/60 hover:text-white">
+                                    <X size={16} />
+                                </button>
+                            </div>
+                            <div className="flex-1 overflow-y-auto px-5 py-2 space-y-4 no-scrollbar">
+                                {commentLoading && comments.length === 0 ? (
+                                    <div className="flex justify-center py-8"><Loader2 className="animate-spin text-primary" size={24} /></div>
+                                ) : comments.length === 0 ? (
+                                    <p className="text-center text-muted-foreground text-sm py-8">No comments yet. Start the conversation!</p>
+                                ) : comments.map(c => (
+                                    <div key={c.id} className="flex gap-3">
+                                        <div className="w-8 h-8 rounded-full overflow-hidden bg-white/10 shrink-0">
+                                            <img src={c.profiles?.avatar_url || 'https://via.placeholder.com/100'} className="w-full h-full object-cover" />
+                                        </div>
+                                        <div>
+                                            <p className="text-xs font-bold text-white">{c.profiles?.full_name}</p>
+                                            <p className="text-sm text-white/80 mt-0.5 leading-snug">{c.content}</p>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                            <div className="p-4 pb-8 border-t border-white/5">
+                                <div className="flex gap-3">
+                                    <div className="w-8 h-8 rounded-full bg-primary/20 text-primary flex items-center justify-center font-black text-sm shrink-0">
+                                        {user?.email?.[0].toUpperCase()}
+                                    </div>
+                                    <div className="flex-1 relative">
+                                        <input
+                                            value={newComment}
+                                            onChange={e => setNewComment(e.target.value)}
+                                            onKeyDown={e => e.key === 'Enter' && handleAddComment()}
+                                            placeholder="Add a comment…"
+                                            className="w-full bg-white/5 border border-white/10 rounded-2xl py-2.5 px-4 text-sm text-white outline-none focus:ring-2 focus:ring-primary/40 placeholder:text-muted-foreground/50 pr-11"
+                                        />
+                                        <button
+                                            onClick={handleAddComment}
+                                            disabled={!newComment.trim()}
+                                            className="absolute right-1.5 top-1/2 -translate-y-1/2 w-7 h-7 rounded-xl bg-primary text-black flex items-center justify-center disabled:opacity-30 transition-all"
+                                        >
+                                            <Send size={12} />
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </motion.div>
+                    </>
+                )}
+            </AnimatePresence>
 
             {/* Content Overlay */}
             <div className="relative z-10 p-6 space-y-4 pb-10">

@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS public.messages (
     content TEXT NOT NULL,
     is_read BOOLEAN DEFAULT false,
     media_url TEXT,
-    media_type TEXT CHECK (media_type IN ('image', 'video', 'file')),
+    media_type TEXT CHECK (media_type IN ('image', 'video', 'file', 'voice')),
     reactions JSONB DEFAULT '{}'::jsonb,
     expires_at TIMESTAMP WITH TIME ZONE,
     view_once BOOLEAN DEFAULT false,

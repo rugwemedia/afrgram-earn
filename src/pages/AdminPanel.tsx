@@ -3,7 +3,8 @@ import { motion } from 'framer-motion';
 import {
     Users, Eye, MousePointer2, Smartphone,
     MapPin, Plus, Edit2, Trash2,
-    Search, ShieldAlert, CheckCircle2, XCircle, Image, Loader2
+    Search, ShieldAlert, CheckCircle2, XCircle, Image, Loader2,
+    MessageCircleQuestion, Send
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useTasks } from '../context/TaskContext';
@@ -15,7 +16,16 @@ const ADMIN_EMAIL = 'sharibaru0@gmail.com';
 
 export function AdminPanel() {
     const { user } = useAuth();
-    const [activeTab, setActiveTab] = useState<'analytics' | 'content' | 'tasks' | 'withdrawals' | 'verification' | 'config'>('analytics');
+    const [activeTab, setActiveTab] = useState<'analytics' | 'content' | 'tasks' | 'withdrawals' | 'verification' | 'config' | 'support'>('analytics');
+    const [openTicketsCount, setOpenTicketsCount] = useState(0);
+
+    useEffect(() => {
+        supabase
+            .from('support_tickets')
+            .select('id', { count: 'exact', head: true })
+            .eq('status', 'open')
+            .then(({ count }) => setOpenTicketsCount(count || 0));
+    }, []);
 
     if (user?.email !== ADMIN_EMAIL) {
         return <Navigate to="/" />;
@@ -32,16 +42,21 @@ export function AdminPanel() {
                 </div>
 
                 <div className="flex bg-white/5 p-1 rounded-2xl border border-white/10 w-fit overflow-x-auto">
-                    {(['analytics', 'content', 'tasks', 'withdrawals', 'verification', 'config'] as const).map((tab) => (
+                    {(['analytics', 'content', 'tasks', 'withdrawals', 'verification', 'config', 'support'] as const).map((tab) => (
                         <button
                             key={tab}
                             onClick={() => setActiveTab(tab)}
                             className={cn(
-                                "px-6 py-2 rounded-xl text-sm font-bold transition-all capitalize whitespace-nowrap",
+                                "px-6 py-2 rounded-xl text-sm font-bold transition-all capitalize whitespace-nowrap relative",
                                 activeTab === tab ? "bg-primary text-white shadow-lg" : "text-muted-foreground"
                             )}
                         >
                             {tab === 'config' ? 'Settings' : tab}
+                            {tab === 'support' && openTicketsCount > 0 && (
+                                <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full text-[9px] text-white font-black flex items-center justify-center">
+                                    {openTicketsCount}
+                                </span>
+                            )}
                         </button>
                     ))}
                 </div>
@@ -53,6 +68,7 @@ export function AdminPanel() {
             {activeTab === 'withdrawals' && <WithdrawalsManager />}
             {activeTab === 'verification' && <VerificationManager />}
             {activeTab === 'config' && <ConfigManager />}
+            {activeTab === 'support' && <SupportManager />}
         </div>
     );
 }
@@ -921,6 +937,240 @@ function ConfigManager() {
                 <p className="text-xs text-muted-foreground leading-relaxed">
                     Changes take effect immediately for all new and pending verification requests. Existing verified users will remain verified unless manually revoked.
                 </p>
+            </div>
+        </div>
+    );
+}
+
+// ─── SUPPORT MANAGER ────────────────────────────────────────────────────────
+const STATUS_COLORS: Record<string, string> = {
+    open: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
+    in_progress: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
+    resolved: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
+    closed: 'bg-white/5 text-muted-foreground border-white/10',
+};
+
+function SupportManager() {
+    const [tickets, setTickets] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [fetchError, setFetchError] = useState<string | null>(null);
+    const [selected, setSelected] = useState<any | null>(null);
+    const [reply, setReply] = useState('');
+    const [sending, setSending] = useState(false);
+    const [filterStatus, setFilterStatus] = useState<string>('all');
+    const [search, setSearch] = useState('');
+
+    useEffect(() => { fetchTickets(); }, []);
+
+    const fetchTickets = async () => {
+        setLoading(true);
+        setFetchError(null);
+        const { data, error } = await supabase
+            .from('support_tickets')
+            .select('*')
+            .order('created_at', { ascending: false });
+
+        console.log('[SupportManager] tickets fetch:', { count: data?.length, error });
+
+        if (error) {
+            console.error('[SupportManager] RLS or fetch error:', error);
+            setFetchError(`DB Error: ${error.message} (code: ${error.code})`);
+        }
+        setTickets(data || []);
+        setLoading(false);
+    };
+
+    const handleReply = async () => {
+        if (!reply.trim() || !selected) return;
+        setSending(true);
+        try {
+            const { error } = await supabase
+                .from('support_tickets')
+                .update({
+                    admin_reply: reply.trim(),
+                    replied_at: new Date().toISOString(),
+                    status: 'in_progress',
+                })
+                .eq('id', selected.id);
+            if (error) throw error;
+            const updated = { ...selected, admin_reply: reply.trim(), replied_at: new Date().toISOString(), status: 'in_progress' };
+            setTickets(prev => prev.map(t => t.id === selected.id ? updated : t));
+            setSelected(updated);
+            setReply('');
+        } catch (err: any) {
+            alert('Error: ' + err.message);
+        } finally {
+            setSending(false);
+        }
+    };
+
+    const handleStatusChange = async (ticketId: string, status: string) => {
+        await supabase.from('support_tickets').update({ status }).eq('id', ticketId);
+        setTickets(prev => prev.map(t => t.id === ticketId ? { ...t, status } : t));
+        if (selected?.id === ticketId) setSelected((s: any) => ({ ...s, status }));
+    };
+
+    const filtered = tickets.filter(t => {
+        const matchesStatus = filterStatus === 'all' || t.status === filterStatus;
+        const matchesSearch = !search || [
+            t.subject, t.message, t.guest_email, t.guest_name, t.guest_handle, t.guest_phone
+        ].some(v => v?.toLowerCase().includes(search.toLowerCase()));
+        return matchesStatus && matchesSearch;
+    });
+
+    return (
+        <div className="space-y-6">
+            <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
+                <div>
+                    <h3 className="text-xl font-black text-white flex items-center gap-2">
+                        <MessageCircleQuestion className="text-primary" size={22} /> Support Tickets
+                    </h3>
+                    <p className="text-sm text-muted-foreground">{tickets.filter(t => t.status === 'open').length} open tickets</p>
+                </div>
+                <div className="flex gap-3">
+                    <div className="relative">
+                        <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                        <input
+                            value={search}
+                            onChange={e => setSearch(e.target.value)}
+                            placeholder="Search tickets…"
+                            className="bg-white/5 border border-white/10 rounded-xl py-2 pl-9 pr-4 text-sm text-white focus:ring-2 focus:ring-primary/50 outline-none w-44"
+                        />
+                    </div>
+                    <select
+                        value={filterStatus}
+                        onChange={e => setFilterStatus(e.target.value)}
+                        className="bg-white/5 border border-white/10 rounded-xl py-2 px-4 text-sm text-white outline-none"
+                    >
+                        <option value="all" className="bg-[#1a1a1a]">All</option>
+                        <option value="open" className="bg-[#1a1a1a]">Open</option>
+                        <option value="in_progress" className="bg-[#1a1a1a]">In Progress</option>
+                        <option value="resolved" className="bg-[#1a1a1a]">Resolved</option>
+                        <option value="closed" className="bg-[#1a1a1a]">Closed</option>
+                    </select>
+                </div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Ticket List */}
+                <div className="space-y-3 max-h-[70vh] overflow-y-auto no-scrollbar pr-1">
+                    {loading ? (
+                        <div className="flex justify-center py-10"><Loader2 size={28} className="animate-spin text-primary" /></div>
+                    ) : fetchError ? (
+                        <div className="p-6 bg-red-500/10 border border-red-500/20 rounded-2xl text-center">
+                            <p className="text-sm text-red-400 font-bold mb-2">Failed to load tickets</p>
+                            <p className="text-[10px] text-muted-foreground break-all font-mono">{fetchError}</p>
+                            <button
+                                onClick={fetchTickets}
+                                className="mt-4 text-[10px] text-white bg-white/10 px-3 py-1.5 rounded-lg hover:bg-white/20 transition-colors"
+                            >
+                                Try Again
+                            </button>
+                        </div>
+                    ) : filtered.length === 0 ? (
+                        <div className="text-center py-10 text-muted-foreground text-sm">No tickets found.</div>
+                    ) : (
+                        filtered.map(ticket => (
+                            <button
+                                key={ticket.id}
+                                onClick={() => { setSelected(ticket); setReply(ticket.admin_reply || ''); }}
+                                className={cn(
+                                    'w-full text-left p-4 rounded-2xl border transition-all space-y-2',
+                                    selected?.id === ticket.id
+                                        ? 'bg-primary/10 border-primary/30'
+                                        : 'bg-white/[0.03] border-white/10 hover:bg-white/[0.06]'
+                                )}
+                            >
+                                <div className="flex items-start justify-between gap-2">
+                                    <p className="font-bold text-white text-sm">{ticket.subject}</p>
+                                    <span className={`text-[10px] font-black px-2 py-0.5 rounded-full border capitalize shrink-0 ${STATUS_COLORS[ticket.status]}`}>
+                                        {ticket.status.replace('_', ' ')}
+                                    </span>
+                                </div>
+                                <p className="text-[11px] text-muted-foreground line-clamp-2">{ticket.message}</p>
+                                <div className="flex items-center justify-between">
+                                    <p className="text-[10px] text-muted-foreground/60">
+                                        {ticket.guest_email || ticket.guest_name || (ticket.user_id ? 'Registered user' : 'Guest')}
+                                    </p>
+                                    <p className="text-[10px] text-muted-foreground/50">{new Date(ticket.created_at).toLocaleDateString()}</p>
+                                </div>
+                                {!ticket.admin_reply && ticket.status === 'open' && (
+                                    <p className="text-[10px] text-amber-500 font-bold">⚠ Needs reply</p>
+                                )}
+                            </button>
+                        ))
+                    )}
+                </div>
+
+                {/* Ticket Detail & Reply */}
+                {selected ? (
+                    <div className="glass-card p-6 rounded-[2rem] space-y-5">
+                        <div className="flex items-center justify-between">
+                            <h4 className="text-white font-black">{selected.subject}</h4>
+                            <select
+                                value={selected.status}
+                                onChange={e => handleStatusChange(selected.id, e.target.value)}
+                                className={cn('text-[11px] font-black px-3 py-1.5 rounded-xl border outline-none', STATUS_COLORS[selected.status])}
+                            >
+                                <option value="open">Open</option>
+                                <option value="in_progress">In Progress</option>
+                                <option value="resolved">Resolved</option>
+                                <option value="closed">Closed</option>
+                            </select>
+                        </div>
+
+                        {/* Guest contact info */}
+                        {(selected.guest_email || selected.guest_phone || selected.guest_whatsapp || selected.guest_handle || selected.guest_name) && (
+                            <div className="bg-white/[0.04] border border-white/10 rounded-2xl p-4 space-y-1.5">
+                                <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-2">Guest Contact Info</p>
+                                {selected.guest_name && <p className="text-xs text-white"><span className="text-muted-foreground">Name:</span> {selected.guest_name}</p>}
+                                {selected.guest_email && <p className="text-xs text-white"><span className="text-muted-foreground">Email:</span> {selected.guest_email}</p>}
+                                {selected.guest_phone && <p className="text-xs text-white"><span className="text-muted-foreground">Phone:</span> {selected.guest_phone}</p>}
+                                {selected.guest_whatsapp && <p className="text-xs text-white"><span className="text-muted-foreground">WhatsApp:</span> {selected.guest_whatsapp}</p>}
+                                {selected.guest_handle && <p className="text-xs text-white"><span className="text-muted-foreground">AFGgram:</span> @{selected.guest_handle}</p>}
+                            </div>
+                        )}
+
+                        {/* Message */}
+                        <div>
+                            <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-2">User Message</p>
+                            <div className="bg-white/[0.04] border border-white/10 rounded-2xl p-4">
+                                <p className="text-sm text-white/80 leading-relaxed">{selected.message}</p>
+                                <p className="text-[10px] text-muted-foreground mt-2">{new Date(selected.created_at).toLocaleString()}</p>
+                            </div>
+                        </div>
+
+                        {/* Admin reply box */}
+                        <div className="space-y-2">
+                            <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Your Reply</p>
+                            <textarea
+                                rows={4}
+                                value={reply}
+                                onChange={e => setReply(e.target.value)}
+                                placeholder="Type your response here…"
+                                className="w-full bg-white/5 border border-white/10 rounded-2xl py-3 px-4 text-sm text-white focus:ring-2 focus:ring-primary/50 outline-none resize-none placeholder:text-muted-foreground/40"
+                            />
+                            <button
+                                onClick={handleReply}
+                                disabled={sending || !reply.trim()}
+                                className="btn-premium w-full py-3 font-black flex items-center justify-center gap-2 disabled:opacity-40 text-sm"
+                            >
+                                {sending ? <><Loader2 size={14} className="animate-spin" /> Sending…</> : <><Send size={14} /> Send Reply</>}
+                            </button>
+                        </div>
+
+                        {selected.replied_at && (
+                            <p className="text-[10px] text-muted-foreground/50 text-center">
+                                Last reply sent {new Date(selected.replied_at).toLocaleString()}
+                            </p>
+                        )}
+                    </div>
+                ) : (
+                    <div className="glass-card p-8 rounded-[2rem] flex flex-col items-center justify-center text-center gap-3 border border-white/5">
+                        <MessageCircleQuestion size={40} className="text-muted-foreground/30" />
+                        <p className="text-muted-foreground text-sm">Select a ticket to view & reply</p>
+                    </div>
+                )}
             </div>
         </div>
     );

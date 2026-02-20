@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { supabase } from '../lib/supabase';
 import { motion } from 'framer-motion';
-import { Save, User, Camera, Loader2, CheckCircle2 } from 'lucide-react';
+import { Save, User, Camera, Loader2, CheckCircle2, Smartphone, Download, QrCode, Apple } from 'lucide-react';
 import { MediaUploader } from '../components/MediaUploader';
 
 export function Settings() {
@@ -283,8 +283,57 @@ export function Settings() {
                             <p className="text-[10px] text-muted-foreground mt-2 italic">You can update your profile and try again after addressing the issues above.</p>
                         </div>
                     )}
+
+                    {/* ── Download App ─────────────────────────────── */}
+                    <div className="pt-8 border-t border-white/5 space-y-4">
+                        <label className="text-sm font-bold text-muted-foreground ml-1 flex items-center gap-2">
+                            <Smartphone size={14} /> Download App
+                        </label>
+                        <p className="text-xs text-muted-foreground/70 ml-1">
+                            Get the AFGgram app on your device for the best experience — faster task alerts and instant MoMo notifications.
+                        </p>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            {/* Android */}
+                            <a
+                                href="/afrgram.apk"
+                                download
+                                className="flex items-center gap-3 p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl hover:bg-emerald-500/15 transition-all group"
+                            >
+                                <div className="w-10 h-10 bg-emerald-500/20 rounded-xl flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
+                                    <Download size={20} className="text-emerald-500" />
+                                </div>
+                                <div>
+                                    <p className="text-xs text-muted-foreground font-bold">Download for</p>
+                                    <p className="text-white font-black text-sm">Android APK</p>
+                                </div>
+                            </a>
+
+                            {/* iOS */}
+                            <div className="flex items-center gap-3 p-4 bg-white/[0.03] border border-white/10 rounded-2xl">
+                                <div className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center shrink-0">
+                                    <Apple size={20} className="text-muted-foreground" />
+                                </div>
+                                <div>
+                                    <p className="text-xs text-muted-foreground font-bold">iOS / iPhone</p>
+                                    <p className="text-white/70 font-bold text-sm">Coming Soon</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* PWA install tip */}
+                        <div className="bg-primary/10 border border-primary/20 rounded-2xl p-4 flex gap-3 items-start">
+                            <QrCode size={20} className="text-primary shrink-0 mt-0.5" />
+                            <div>
+                                <p className="text-sm font-bold text-white">Install as Web App (PWA)</p>
+                                <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
+                                    On your phone browser, tap the <strong className="text-white">Share</strong> button (iOS) or the <strong className="text-white">⋮ menu</strong> (Android) and choose <em>"Add to Home Screen"</em> — no app store needed!
+                                </p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </motion.div >
-        </div >
+            </motion.div>
+        </div>
     );
 }
