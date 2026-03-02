@@ -3,7 +3,7 @@
 If you are seeing a blank screen or a loading spinner that won't disappear, it is likely because **Supabase** is not configured.
 
 ### 1. Create a `.env` file
-Create a file named `.env` in the root of your project (`d:\afrgam\.env`) and add your Supabase credentials:
+Create a file named `.env` in the root of your project (`d:\afrgram\.env`) and add your Supabase credentials:
 
 ```bash
 VITE_SUPABASE_URL=YOUR_SUPABASE_PROJECT_URL

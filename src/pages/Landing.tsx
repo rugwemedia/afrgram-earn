@@ -6,29 +6,29 @@ import {
 } from 'lucide-react';
 
 const STATS = [
-    { value: '15,000+', label: 'Active Earners' },
-    { value: '50M RWF', label: 'Total Paid Out' },
-    { value: '99.9%', label: 'Uptime' },
-    { value: '24/7', label: 'Support' },
+    { value: '50k+', label: 'Daily Messages' },
+    { value: '15,000+', label: 'Gen-Z Creators' },
+    { value: '50M RWF', label: 'Community Rewards' },
+    { value: '99.9%', label: 'Secure Uptime' },
 ];
 
 const FEATURES = [
-    { icon: Zap, label: 'Instant Payouts', detail: 'MTN & Airtel MoMo integration — withdraw in seconds.', color: 'text-amber-500', bg: 'bg-amber-500/10' },
-    { icon: ShieldCheck, label: 'Fully Verified', detail: 'Bank-grade security with end-to-end encryption.', color: 'text-emerald-500', bg: 'bg-emerald-500/10' },
-    { icon: Globe, label: 'Global Tasks', detail: 'Hundreds of digital tasks available around the clock.', color: 'text-blue-500', bg: 'bg-blue-500/10' },
-    { icon: TrendingUp, label: 'Top Commissions', detail: 'Highest earning rates in the region. Tier rewards.', color: 'text-purple-500', bg: 'bg-purple-500/10' },
+    { icon: Globe, label: 'Free Social Chat', detail: 'Connect with friends and creators worldwide for free.', color: 'text-sky-500', bg: 'bg-sky-500/10' },
+    { icon: ShieldCheck, label: 'Secured by Design', detail: 'End-to-end encrypted chats and secure payouts.', color: 'text-emerald-500', bg: 'bg-emerald-500/10' },
+    { icon: Zap, label: 'Instant Earning', detail: 'Complete micro-tasks and withdraw to MoMo instantly.', color: 'text-amber-500', bg: 'bg-amber-500/10' },
+    { icon: TrendingUp, label: 'Simple & Clean', detail: 'Zero clutter. Built for speed and ease of use.', color: 'text-purple-500', bg: 'bg-purple-500/10' },
 ];
 
 const HOW_IT_WORKS = [
-    { step: '01', title: 'Create Account', desc: 'Sign up in 30 seconds. No fees, no credit card needed.' },
-    { step: '02', title: 'Complete Tasks', desc: 'Like posts, verify emails, share content. Each task pays.' },
-    { step: '03', title: 'Earn Real Money', desc: 'Withdraw directly to MTN/Airtel MoMo instantly.' },
+    { step: '01', title: 'Join the Community', desc: 'Sign up in 30 seconds. No hidden fees or complex setups.' },
+    { step: '02', title: 'Connect & Explore', desc: 'Chat with peers, share content, and find daily tasks.' },
+    { step: '03', title: 'Earn as You Go', desc: 'Get rewarded for your time. Withdraw to MoMo anytime.' },
 ];
 
 const TESTIMONIALS = [
-    { name: 'Claudine M.', handle: '@claudine_rw', text: 'I earned 120,000 RWF in my first month doing simple tasks!', stars: 5, avatar: 'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=80&q=80' },
-    { name: 'Jean Pierre', handle: '@jp_kigali', text: 'Withdrawals hit my MoMo in seconds. This is the real deal.', stars: 5, avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=80&q=80' },
-    { name: 'Aline K.', handle: '@aline.codes', text: 'AFGgram helped me pay my university fees. Highly recommend!', stars: 5, avatar: 'https://images.unsplash.com/photo-1520813792240-56fc4a3765a7?w=80&q=80' },
+    { name: 'Claudine M.', handle: '@claudine_rw', text: 'Love the clean interface! It’s the first social app that actually pays me for my time.', stars: 5, avatar: 'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=80&q=80' },
+    { name: 'Jean Pierre', handle: '@jp_kigali', text: 'Secure, fast, and simple. The chat is smooth and the tasks are easy RWF.', stars: 5, avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=80&q=80' },
+    { name: 'Aline K.', handle: '@aline.codes', text: 'Afrgram is exactly what Gen-Z needed. No nonsense, just connection and earnings.', stars: 5, avatar: 'https://images.unsplash.com/photo-1520813792240-56fc4a3765a7?w=80&q=80' },
 ];
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -57,7 +57,7 @@ export function Landing() {
                     <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center shadow-[0_0_20px_rgba(59,130,246,0.5)]">
                         <span className="text-white font-black text-lg italic">A</span>
                     </div>
-                    <span className="text-2xl font-black tracking-tighter">AFGgram</span>
+                    <span className="text-2xl font-black tracking-tighter">Afrgram</span>
                     <span className="hidden sm:block ml-1 text-[9px] bg-emerald-500/20 text-emerald-400 font-black px-2 py-0.5 rounded-full uppercase tracking-widest border border-emerald-500/20">Live</span>
                 </motion.div>
                 <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="flex items-center gap-3">
@@ -82,9 +82,9 @@ export function Landing() {
                     initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, type: 'spring', stiffness: 70 }}
                     className="text-5xl sm:text-6xl md:text-8xl font-black tracking-tight leading-[0.9] mb-6"
                 >
-                    Earn Real Money<br />
-                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-blue-400 to-purple-500 italic">
-                        Doing Simple Tasks.
+                    Chat free, Simple,<br />
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-blue-400 to-emerald-400 italic">
+                        Secure & Earnable.
                     </span>
                 </motion.h1>
 
@@ -92,8 +92,8 @@ export function Landing() {
                     initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }}
                     className="text-lg md:text-xl text-white/50 font-medium max-w-2xl mx-auto leading-relaxed mb-10"
                 >
-                    AFGgram pays you to like posts, verify accounts and complete micro-tasks.
-                    Withdraw directly to <span className="text-white font-bold">MTN or Airtel MoMo</span> — instantly.
+                    Afrgram is the gen-z web app for seamless connection.
+                    Chat for free, stay secure, and complete micro-tasks to earn real <span className="text-white font-bold">RWF</span> instantly.
                 </motion.p>
 
                 <motion.div
@@ -104,13 +104,13 @@ export function Landing() {
                         onClick={() => navigate('/register')}
                         className="btn-premium px-10 py-5 text-lg font-black flex items-center justify-center gap-3 group shadow-[0_0_40px_rgba(59,130,246,0.3)]"
                     >
-                        Start Earning Free <ArrowRight className="group-hover:translate-x-1 transition-transform" />
+                        Join the Web <ArrowRight className="group-hover:translate-x-1 transition-transform" />
                     </button>
                     <button
                         onClick={() => navigate('/login')}
                         className="bg-white/5 hover:bg-white/10 border border-white/10 text-white font-bold px-10 py-5 rounded-2xl transition-all backdrop-blur-md flex items-center justify-center gap-2"
                     >
-                        <Play size={18} className="fill-white" /> See How It Works
+                        Learn More
                     </button>
                 </motion.div>
 
@@ -135,9 +135,9 @@ export function Landing() {
                     variants={stagger}
                     className="text-center mb-14"
                 >
-                    <motion.p variants={fadeUp} className="text-xs font-black text-primary uppercase tracking-[0.3em] mb-3">How It Works</motion.p>
+                    <motion.p variants={fadeUp} className="text-xs font-black text-primary uppercase tracking-[0.3em] mb-3">Your Journey</motion.p>
                     <motion.h2 variants={fadeUp} className="text-4xl md:text-5xl font-black tracking-tight">
-                        Earn in 3 Simple Steps
+                        Simple, Secure, Social
                     </motion.h2>
                 </motion.div>
 
@@ -166,9 +166,9 @@ export function Landing() {
                     variants={stagger}
                     className="text-center mb-14"
                 >
-                    <motion.p variants={fadeUp} className="text-xs font-black text-primary uppercase tracking-[0.3em] mb-3">Why AFGgram</motion.p>
+                    <motion.p variants={fadeUp} className="text-xs font-black text-primary uppercase tracking-[0.3em] mb-3">Why Afrgram</motion.p>
                     <motion.h2 variants={fadeUp} className="text-4xl md:text-5xl font-black tracking-tight">
-                        Built to Make You Money
+                        Built for the Next Generation
                     </motion.h2>
                 </motion.div>
 
@@ -205,11 +205,11 @@ export function Landing() {
                         <div className="flex-1 space-y-6">
                             <motion.p variants={fadeUp} className="text-xs font-black text-primary uppercase tracking-[0.3em]">Real Earnings</motion.p>
                             <motion.h2 variants={fadeUp} className="text-4xl md:text-5xl font-black tracking-tight leading-tight">
-                                Top earners make<br />
-                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-500">200,000 RWF/month</span>
+                                Connect with friends<br />
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-blue-500">Earn from your passion</span>
                             </motion.h2>
                             <motion.p variants={fadeUp} className="text-muted-foreground leading-relaxed">
-                                Complete daily tasks, build your referral network, and unlock higher-paying Tier-2 and Tier-3 opportunities.
+                                Join a vibrant community where your engagement translates to real value. No fluff, just connection and rewards.
                             </motion.p>
                             <motion.ul variants={stagger} className="space-y-3">
                                 {['No upfront investment required', 'Withdraw any time, any amount', 'Referral bonuses for every friend you invite'].map((item, i) => (
@@ -222,9 +222,9 @@ export function Landing() {
                             <motion.button
                                 variants={fadeUp}
                                 onClick={() => navigate('/register')}
-                                className="btn-premium px-8 py-4 font-black flex items-center gap-2 group mt-4"
+                                className="btn-premium px-8 py-4 font-black flex items-center gap-2 group mt-4 shadow-[0_0_30px_rgba(59,130,246,0.2)]"
                             >
-                                Start Earning Now <ArrowRight className="group-hover:translate-x-1 transition-transform" />
+                                Get Started <ArrowRight className="group-hover:translate-x-1 transition-transform" />
                             </motion.button>
                         </div>
 
@@ -256,7 +256,7 @@ export function Landing() {
                                     ))}
                                 </div>
                                 <button className="w-full py-3 bg-primary rounded-2xl text-white font-black text-sm hover:bg-primary/90 transition-colors">
-                                    Withdraw to MoMo
+                                    Go to Dashboard
                                 </button>
                             </div>
                         </div>
@@ -271,9 +271,9 @@ export function Landing() {
                     variants={stagger}
                     className="text-center mb-14"
                 >
-                    <motion.p variants={fadeUp} className="text-xs font-black text-primary uppercase tracking-[0.3em] mb-3">Testimonials</motion.p>
+                    <motion.p variants={fadeUp} className="text-xs font-black text-primary uppercase tracking-[0.3em] mb-3">Community Voices</motion.p>
                     <motion.h2 variants={fadeUp} className="text-4xl md:text-5xl font-black tracking-tight">
-                        Real People, Real Earnings
+                        Built for You, by Us
                     </motion.h2>
                 </motion.div>
 
@@ -312,23 +312,23 @@ export function Landing() {
                         {Array(5).fill(0).map((_, i) => <Star key={i} size={18} className="text-amber-500 fill-amber-500" />)}
                     </div>
                     <h2 className="text-4xl md:text-6xl font-black tracking-tight">
-                        Ready to Start Earning?
+                        The Future is Social.
                     </h2>
                     <p className="text-muted-foreground text-lg max-w-xl mx-auto">
-                        Join 15,000+ Rwandans who are already earning with AFGgram. Create your free account in 30 seconds.
+                        Join 15,000+ creators who are already redefining social earnings.
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
                         <button
                             onClick={() => navigate('/register')}
-                            className="btn-premium px-12 py-5 text-xl font-black flex items-center justify-center gap-3 group shadow-[0_0_60px_rgba(59,130,246,0.25)]"
+                            className="btn-premium px-12 py-5 text-xl font-black flex items-center justify-center gap-3 group shadow-[0_0_60px_rgba(59,130,246,0.3)]"
                         >
-                            Create Free Account <ArrowRight className="group-hover:translate-x-1 transition-transform" />
+                            Get Started Now <ArrowRight className="group-hover:translate-x-1 transition-transform" />
                         </button>
                     </div>
                     <div className="flex items-center justify-center gap-6 text-xs text-muted-foreground/60 font-bold">
-                        <div className="flex items-center gap-2"><CheckCircle2 size={14} className="text-emerald-500" />No fees</div>
-                        <div className="flex items-center gap-2"><CheckCircle2 size={14} className="text-emerald-500" />No credit card</div>
-                        <div className="flex items-center gap-2"><CheckCircle2 size={14} className="text-emerald-500" />Instant payouts</div>
+                        <div className="flex items-center gap-2"><CheckCircle2 size={14} className="text-emerald-500" />End-to-End Secure</div>
+                        <div className="flex items-center gap-2"><CheckCircle2 size={14} className="text-emerald-500" />Zero Fees</div>
+                        <div className="flex items-center gap-2"><CheckCircle2 size={14} className="text-emerald-500" />Real Earnings</div>
                     </div>
                 </motion.div>
             </section>
@@ -340,7 +340,7 @@ export function Landing() {
                         <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
                             <span className="text-white font-black text-sm italic">A</span>
                         </div>
-                        <span className="font-black text-white tracking-tighter">AFGgram</span>
+                        <span className="font-black text-white tracking-tighter">Afrgram</span>
                     </div>
                     <div className="flex gap-8 text-sm text-muted-foreground font-medium">
                         <button onClick={() => navigate('/login')} className="hover:text-white transition-colors">Log In</button>

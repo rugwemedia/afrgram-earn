@@ -1,4 +1,4 @@
--- Create the messages table with all features for AFGgram
+-- Create the messages table with all features for Afrgram
 CREATE TABLE IF NOT EXISTS public.messages (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     sender_id UUID REFERENCES public.profiles(id) NOT NULL,

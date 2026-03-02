@@ -74,7 +74,7 @@ export function Login() {
                                 <KeyRound size={32} className="text-white" />
                             </div>
                             <h1 className="text-3xl font-black text-white tracking-tight">Welcome Back</h1>
-                            <p className="text-muted-foreground mt-2 text-center">Securely access your AFGgram account.</p>
+                            <p className="text-muted-foreground mt-2 text-center">Securely access your Afrgram account.</p>
                         </div>
 
                         {error && (

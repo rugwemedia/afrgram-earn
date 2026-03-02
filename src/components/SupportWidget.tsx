@@ -103,7 +103,7 @@ export function SupportWidget() {
     const handleSubmit = async () => {
         if (!message.trim() || !subject) return;
         if (!user && !guestEmail.trim() && !guestPhone.trim() && !guestHandle.trim()) {
-            alert('Please provide at least one contact detail (email, phone, or AFGgram handle).');
+            alert('Please provide at least one contact detail (email, phone, or Afrgram handle).');
             return;
         }
 
@@ -279,7 +279,7 @@ export function SupportWidget() {
                                                     { label: 'Email Address', value: guestEmail, set: setGuestEmail, placeholder: 'name@example.com', required: false },
                                                     { label: 'Phone Number', value: guestPhone, set: setGuestPhone, placeholder: '+250 7XX XXX XXX', required: false },
                                                     { label: 'WhatsApp Number', value: guestWhatsapp, set: setGuestWhatsapp, placeholder: '+250 7XX XXX XXX', required: false },
-                                                    { label: 'AFGgram Handle', value: guestHandle, set: setGuestHandle, placeholder: '@yourhandle', required: false },
+                                                    { label: 'Afrgram Handle', value: guestHandle, set: setGuestHandle, placeholder: '@yourhandle', required: false },
                                                 ].map(({ label, value, set, placeholder }) => (
                                                     <div key={label} className="space-y-1">
                                                         <label className="text-[10px] font-bold text-muted-foreground ml-1">{label}</label>

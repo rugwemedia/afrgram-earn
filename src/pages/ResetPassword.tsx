@@ -128,7 +128,7 @@ export function ResetPassword() {
                     </div>
                     <h1 className="text-2xl font-black text-white tracking-tight">Set New Password</h1>
                     <p className="text-muted-foreground mt-2 text-center text-sm">
-                        Choose a strong password for your AFGgram account.
+                        Choose a strong password for your Afrgram account.
                     </p>
                 </div>
 
@@ -189,8 +189,8 @@ export function ResetPassword() {
                                 required
                                 placeholder="Repeat your password"
                                 className={`w-full bg-white/5 border rounded-2xl py-4 pl-12 pr-12 focus:ring-2 outline-none text-white transition-all ${confirm && password !== confirm
-                                        ? 'border-red-500/50 focus:ring-red-500/20'
-                                        : 'border-white/10 focus:ring-primary/50 focus:border-primary'
+                                    ? 'border-red-500/50 focus:ring-red-500/20'
+                                    : 'border-white/10 focus:ring-primary/50 focus:border-primary'
                                     }`}
                                 value={confirm}
                                 onChange={(e) => setConfirm(e.target.value)}

@@ -290,7 +290,7 @@ export function Settings() {
                             <Smartphone size={14} /> Download App
                         </label>
                         <p className="text-xs text-muted-foreground/70 ml-1">
-                            Get the AFGgram app on your device for the best experience — faster task alerts and instant MoMo notifications.
+                            Get the Afrgram app on your device for the best experience — faster task alerts and instant MoMo notifications.
                         </p>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">

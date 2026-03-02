@@ -9,14 +9,14 @@ cloudinary.config({
 
 async function createPreset() {
     try {
-        const presetName = 'afrgam_unsigned';
+        const presetName = 'afrgram_unsigned';
 
         // Check if it already exists or just try to create it
         // We'll try to create/update an unsigned preset
         const result = await cloudinary.api.create_upload_preset({
             name: presetName,
             unsigned: true,
-            folder: 'afrgam_uploads',
+            folder: 'afrgram_uploads',
             allowed_formats: ['jpg', 'png', 'mp4', 'mov'],
         });
 
@@ -24,7 +24,7 @@ async function createPreset() {
         console.log('Preset Name:', result.name);
     } catch (error: any) {
         if (error.error?.message?.includes('already exists')) {
-            console.log('Preset already exists: afrgam_unsigned');
+            console.log('Preset already exists: afrgram_unsigned');
         } else {
             console.error('Error creating preset:', error);
         }

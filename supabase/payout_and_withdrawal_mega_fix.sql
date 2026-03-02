@@ -1,5 +1,5 @@
 -- ============================================================
--- AFGgram MEGA FIX: Reward Payouts & Withdrawals
+-- Afrgram MEGA FIX: Reward Payouts & Withdrawals
 -- Run this in Supabase Dashboard → SQL Editor → New Query
 -- ============================================================
 

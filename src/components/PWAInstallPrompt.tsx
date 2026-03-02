@@ -94,7 +94,7 @@ export function PWAInstallPrompt() {
                         <div className="space-y-2">
                             <h3 className="text-2xl font-black text-white italic tracking-tight">App Experience</h3>
                             <p className="text-sm text-muted-foreground leading-relaxed">
-                                Install <span className="text-white font-bold tracking-tighter">AFGgram</span> for faster access, instant alerts, and smooth digital earnings.
+                                Install <span className="text-white font-bold tracking-tighter">Afrgram</span> for faster access, instant alerts, and smooth digital earnings.
                             </p>
                         </div>
 

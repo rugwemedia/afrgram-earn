@@ -92,7 +92,7 @@ function PWAInstallPrompt() {
                             </div>
 
                             <div className="space-y-2">
-                                <h3 className="text-2xl font-black text-white italic tracking-tight">Download AFGgram</h3>
+                                <h3 className="text-2xl font-black text-white italic tracking-tight">Download Afrgram</h3>
                                 <p className="text-sm text-muted-foreground leading-relaxed">
                                     Install our app for instant alerts, faster access, and seamless digital earnings.
                                 </p>
@@ -214,7 +214,7 @@ export function MainLayout({ children }: MainLayoutProps) {
                             {/* Drawer header */}
                             <div className="flex justify-between items-center mb-8">
                                 <div>
-                                    <h2 className="text-lg font-black text-white italic">AFGgram</h2>
+                                    <h2 className="text-lg font-black text-white italic">Afrgram</h2>
                                     <div className="flex items-center gap-1.5 mt-0.5">
                                         <Wallet size={12} className="text-amber-500" />
                                         <span className="text-xs font-black text-amber-500">{balance.toLocaleString()} RWF</span>
@@ -307,7 +307,7 @@ export function MainLayout({ children }: MainLayoutProps) {
                         <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shadow-[0_0_20px_rgba(59,130,246,0.5)]">
                             <span className="font-black text-xl text-white">A</span>
                         </div>
-                        <h1 className="text-2xl font-black tracking-tighter text-white">AFGgram</h1>
+                        <h1 className="text-2xl font-black tracking-tighter text-white">Afrgram</h1>
                     </div>
                     <div className="bg-white/5 px-3 py-1.5 rounded-xl border border-white/10 flex items-center gap-1.5 cursor-pointer hover:bg-white/10 transition-colors">
                         <Wallet size={13} className="text-amber-500" />
@@ -378,7 +378,7 @@ export function MainLayout({ children }: MainLayoutProps) {
             <div className="flex-1 flex flex-col min-w-0">
                 {/* Mobile Header */}
                 <header className="sticky top-0 z-40 md:hidden glass border-b border-white/10 px-4 py-3 flex justify-between items-center">
-                    <h1 className="text-xl font-black tracking-tighter text-white">AFGgram</h1>
+                    <h1 className="text-xl font-black tracking-tighter text-white">Afrgram</h1>
                     <div
                         className="flex items-center gap-2 bg-white/5 px-3 py-1.5 rounded-full border border-white/10 cursor-pointer hover:bg-white/10 transition-colors"
                         onClick={() => navigate('/dashboard')}

@@ -20,8 +20,8 @@ export function GmailTask({ onBack }: GmailTaskProps) {
     const taskData = {
         name: "John Musoni",
         emailFormat: "jmusoni.xxxx@gmail.com",
-        password: "AFGgramPass!2024",
-        recoveryEmail: "security@afggram.com"
+        password: "AfrgramPass!2024",
+        recoveryEmail: "security@afrgram.com"
     };
 
     const handleNext = () => setStep(prev => prev + 1);

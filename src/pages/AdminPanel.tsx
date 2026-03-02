@@ -38,7 +38,7 @@ export function AdminPanel() {
                     <h2 className="text-3xl font-black text-white tracking-tight flex items-center gap-3">
                         <ShieldAlert className="text-primary" /> Admin Control
                     </h2>
-                    <p className="text-muted-foreground">Secure management for AFGgram Articles & Users.</p>
+                    <p className="text-muted-foreground">Secure management for Afrgram Articles & Users.</p>
                 </div>
 
                 <div className="flex bg-white/5 p-1 rounded-2xl border border-white/10 w-fit overflow-x-auto">
@@ -897,7 +897,7 @@ function ConfigManager() {
         <div className="max-w-2xl space-y-8">
             <div className="glass-card p-8 rounded-[2.5rem] border-l-4 border-primary">
                 <h3 className="text-xl font-black text-white uppercase tracking-tight mb-2">Global Verification Rules</h3>
-                <p className="text-sm text-muted-foreground mb-8">Set the requirements for the blue tick badge across AFGgram.</p>
+                <p className="text-sm text-muted-foreground mb-8">Set the requirements for the blue tick badge across Afrgram.</p>
 
                 <div className="space-y-6">
                     <div>
@@ -1127,7 +1127,7 @@ function SupportManager() {
                                 {selected.guest_email && <p className="text-xs text-white"><span className="text-muted-foreground">Email:</span> {selected.guest_email}</p>}
                                 {selected.guest_phone && <p className="text-xs text-white"><span className="text-muted-foreground">Phone:</span> {selected.guest_phone}</p>}
                                 {selected.guest_whatsapp && <p className="text-xs text-white"><span className="text-muted-foreground">WhatsApp:</span> {selected.guest_whatsapp}</p>}
-                                {selected.guest_handle && <p className="text-xs text-white"><span className="text-muted-foreground">AFGgram:</span> @{selected.guest_handle}</p>}
+                                {selected.guest_handle && <p className="text-xs text-white"><span className="text-muted-foreground">Afrgram:</span> @{selected.guest_handle}</p>}
                             </div>
                         )}
 

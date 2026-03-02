@@ -118,7 +118,7 @@ export function Register() {
                     <div className="w-16 h-16 rounded-2xl bg-primary flex items-center justify-center mb-4 shadow-[0_0_30px_rgba(59,130,246,0.4)]">
                         <span className="text-white font-black text-2xl italic">A</span>
                     </div>
-                    <h1 className="text-3xl font-black text-white tracking-tight">Join AFGgram</h1>
+                    <h1 className="text-3xl font-black text-white tracking-tight">Join Afrgram</h1>
                     <p className="text-muted-foreground mt-1 text-sm">Earn real money doing simple tasks</p>
                 </div>
 

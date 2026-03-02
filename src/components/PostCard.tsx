@@ -157,7 +157,7 @@ export function PostCard({ id, user, content, image, likes, comments, timestamp,
                                     const url = `${window.location.origin}/post/${id}`;
                                     if (navigator.share) {
                                         navigator.share({
-                                            title: 'AFGgram',
+                                            title: 'Afrgram',
                                             text: content,
                                             url: url
                                         }).catch(() => { });
@@ -185,7 +185,7 @@ export function PostCard({ id, user, content, image, likes, comments, timestamp,
                                     <span className="uppercase tracking-widest text-[8px]">WhatsApp</span>
                                 </a>
                                 <a
-                                    href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(window.location.origin + "/post/" + id)}&text=${encodeURIComponent("Check out this post on AFGgram")}`}
+                                    href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(window.location.origin + "/post/" + id)}&text=${encodeURIComponent("Check out this post on Afrgram")}`}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="flex items-center gap-3 px-3 py-2.5 hover:bg-blue-400/10 rounded-xl text-[10px] font-bold text-white transition-colors"
