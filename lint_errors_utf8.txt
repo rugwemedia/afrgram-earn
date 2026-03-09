@@ -1,0 +1,549 @@
+﻿
+> afrgram@0.0.0 lint
+> eslint .
+
+
+D:\afrgam\scripts\create-preset.js
+  25:19  error  Parsing error: Unexpected token :
+
+D:\afrgam\src\components\CallOverlay.tsx
+   19:22  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   @typescript-eslint/no-explicit-any
+   20:24  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   @typescript-eslint/no-explicit-any
+   39:36  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   @typescript-eslint/no-explicit-any
+   46:17  error    Error: Cannot access variable before it is declared
+
+`joinRoom` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+D:\afrgam\src\components\CallOverlay.tsx:46:17
+  44 |             // iOS Fix: Caller joins immediately to use the gesture
+  45 |             if (newCall.caller_id === user?.id) {
+> 46 |                 joinRoom(newCall.room_id, newCall);
+     |                 ^^^^^^^^ `joinRoom` accessed before it is declared
+  47 |             }
+  48 |         };
+  49 |         window.addEventListener('initiate-call', handleInitiate);
+
+D:\afrgam\src\components\CallOverlay.tsx:93:5
+   91 |     }, [user, call?.id, joined]);
+   92 |
+>  93 |     const joinRoom = async (roomId: string, currentCall: CallState) => {
+      |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  94 |         if (!AGORA_APP_ID || AGORA_APP_ID === "PASTE_YOUR_AGORA_APP_ID_HERE" || !user) return;
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  95 |         if (joined) return;
+      ΓÇª
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 124 |         setJoined(true);
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 125 |     };
+      | ^^^^^^^ `joinRoom` is declared here
+  126 |
+  127 |     // Auto-timeout logic: 90 seconds
+  128 |     useEffect(() => {  react-hooks/immutability
+   51:8   warning  React Hook useEffect has a missing dependency: 'joinRoom'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                react-hooks/exhaustive-deps
+   62:32  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   @typescript-eslint/no-explicit-any
+   80:25  error    Error: Cannot access variable before it is declared
+
+`endCallCleanup` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+D:\afrgam\src\components\CallOverlay.tsx:80:25
+  78 |                 if (call && updated.id === call.id) {
+  79 |                     if (updated.status === 'ended' || updated.status === 'declined') {
+> 80 |                         endCallCleanup();
+     |                         ^^^^^^^^^^^^^^ `endCallCleanup` accessed before it is declared
+  81 |                     }
+  82 |                     // For receiver: join when ongoing
+  83 |                     if (updated.status === 'ongoing' && !joined && updated.receiver_id === user.id) {
+
+D:\afrgam\src\components\CallOverlay.tsx:156:5
+  154 |     };
+  155 |
+> 156 |     const endCallCleanup = () => {
+      |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 157 |         localAudio.current?.close();
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 158 |         localVideo.current?.close();
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 159 |         client.current?.leave();
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 160 |         setCall(null);
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 161 |         setJoined(false);
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 162 |     };
+      | ^^^^^^^ `endCallCleanup` is declared here
+  163 |
+  164 |     const toggleMute = () => {
+  165 |         localAudio.current?.setEnabled(muted);                     react-hooks/immutability
+   91:8   warning  React Hook useEffect has missing dependencies: 'call' and 'joinRoom'. Either include them or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   react-hooks/exhaustive-deps
+  103:23  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   @typescript-eslint/no-explicit-any
+  132:17  error    Error: Cannot access variable before it is declared
+
+`handleEnd` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+D:\afrgam\src\components\CallOverlay.tsx:132:17
+  130 |             const timer = setTimeout(() => {
+  131 |                 console.log("Call timed out after 90s");
+> 132 |                 handleEnd();
+      |                 ^^^^^^^^^ `handleEnd` accessed before it is declared
+  133 |             }, 90000);
+  134 |             return () => clearTimeout(timer);
+  135 |         }
+
+D:\afrgam\src\components\CallOverlay.tsx:150:5
+  148 |     };
+  149 |
+> 150 |     const handleEnd = async () => {
+      |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 151 |         if (!call) return;
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 152 |         await supabase.from('calls').update({ status: 'ended' }).eq('id', call.id);
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 153 |         endCallCleanup();
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 154 |     };
+      | ^^^^^^^ `handleEnd` is declared here
+  155 |
+  156 |     const endCallCleanup = () => {
+  157 |         localAudio.current?.close();                                                                                                                                                                                                                                                                                                                                                                react-hooks/immutability
+  136:8   warning  React Hook useEffect has a missing dependency: 'handleEnd'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               react-hooks/exhaustive-deps
+
+D:\afrgam\src\components\MainLayout.tsx
+   20:58  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     @typescript-eslint/no-explicit-any
+   30:29  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     @typescript-eslint/no-explicit-any
+  149:9   error    Error: Cannot access variable before it is declared
+
+`fetchUnreadCount` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+D:\afrgam\src\components\MainLayout.tsx:149:9
+  147 |     useEffect(() => {
+  148 |         if (!user) return;
+> 149 |         fetchUnreadCount();
+      |         ^^^^^^^^^^^^^^^^ `fetchUnreadCount` accessed before it is declared
+  150 |         const channel = supabase
+  151 |             .channel('unread_total')
+  152 |             .on('postgres_changes', {
+
+D:\afrgam\src\components\MainLayout.tsx:162:5
+  160 |     }, [user]);
+  161 |
+> 162 |     const fetchUnreadCount = async () => {
+      |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 163 |         const { count } = await supabase
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 164 |             .from('notifications')
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 165 |             .select('*', { count: 'exact', head: true })
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 166 |             .eq('user_id', user?.id)
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 167 |             .eq('is_read', false);
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 168 |         setUnreadCount(count || 0);
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 169 |     };
+      | ^^^^^^^ `fetchUnreadCount` is declared here
+  170 |
+  171 |     // All nav items
+  172 |     const navItems = [  react-hooks/immutability
+  160:8   warning  React Hook useEffect has a missing dependency: 'fetchUnreadCount'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          react-hooks/exhaustive-deps
+
+D:\afrgam\src\components\MediaUploader.tsx
+  69:23  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\afrgam\src\components\PWAInstallPrompt.tsx
+   6:58  error  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        @typescript-eslint/no-explicit-any
+  11:29  error  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        @typescript-eslint/no-explicit-any
+  49:17  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+D:\afrgam\src\components\PWAInstallPrompt.tsx:49:17
+  47 |             const twentyFourHours = 24 * 60 * 60 * 1000;
+  48 |             if (new Date().getTime() - parseInt(dismissedAt) < twentyFourHours) {
+> 49 |                 setIsDismissed(true);
+     |                 ^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  50 |             }
+  51 |         }
+  52 |     }, []);  react-hooks/set-state-in-effect
+
+D:\afrgam\src\components\ReelPlayer.tsx
+    9:11   error    Unexpected any. Specify a different type                                                                         @typescript-eslint/no-explicit-any
+   24:46   error    Unexpected any. Specify a different type                                                                         @typescript-eslint/no-explicit-any
+   50:8    warning  React Hook useEffect has a missing dependency: 'checkIfLiked'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+   93:34   error    Unexpected any. Specify a different type                                                                         @typescript-eslint/no-explicit-any
+  114:67   error    Unexpected any. Specify a different type                                                                         @typescript-eslint/no-explicit-any
+  114:93   error    Unexpected any. Specify a different type                                                                         @typescript-eslint/no-explicit-any
+  114:121  error    Unexpected any. Specify a different type                                                                         @typescript-eslint/no-explicit-any
+  118:23   error    Unexpected any. Specify a different type                                                                         @typescript-eslint/no-explicit-any
+  138:23   error    Unexpected any. Specify a different type                                                                         @typescript-eslint/no-explicit-any
+  322:68   error    Unexpected any. Specify a different type                                                                         @typescript-eslint/no-explicit-any
+
+D:\afrgam\src\components\SupportWidget.tsx
+   77:8   warning  React Hook useEffect has a missing dependency: 'fetchMyTickets'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+   96:23  error    Unexpected any. Specify a different type                                                                           @typescript-eslint/no-explicit-any
+  112:28  error    Unexpected any. Specify a different type                                                                           @typescript-eslint/no-explicit-any
+  135:23  error    Unexpected any. Specify a different type                                                                           @typescript-eslint/no-explicit-any
+
+D:\afrgam\src\components\WithdrawModal.tsx
+  99:23  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\afrgam\src\context\AuthContext.tsx
+    9:14  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+   23:44  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+   49:13  error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+D:\afrgam\src\context\AuthContext.tsx:49:13
+  47 |     useEffect(() => {
+  48 |         if (user) {
+> 49 |             refreshProfile();
+     |             ^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  50 |
+  51 |             // Subscribe to profile changes
+  52 |             const channel = supabase  react-hooks/set-state-in-effect
+   59:30  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+   69:8   warning  React Hook useEffect has missing dependencies: 'refreshProfile' and 'user'. Either include them or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          react-hooks/exhaustive-deps
+   93:24  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+  110:8   warning  React Hook useEffect has a missing dependency: 'user'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 react-hooks/exhaustive-deps
+  123:17  error    Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          react-refresh/only-export-components
+
+D:\afrgam\src\context\TaskContext.tsx
+   73:50  error  Unexpected any. Specify a different type                                                                                        @typescript-eslint/no-explicit-any
+   98:37  error  Unexpected any. Specify a different type                                                                                        @typescript-eslint/no-explicit-any
+  212:17  error  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+D:\afrgam\src\lib\supabase.ts
+  10:10  error  Redundant double negation  no-extra-boolean-cast
+  11:10  error  Redundant double negation  no-extra-boolean-cast
+
+D:\afrgam\src\pages\AdminPanel.tsx
+    77:40   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+    78:44   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+    98:66   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+    98:77   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   249:52   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   417:23   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   484:101  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   647:46   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   665:23   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   687:28   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   708:23   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   860:42   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   887:23   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   954:44   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   957:46   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  1000:23   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  1010:56   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\afrgam\src\pages\Dashboard.tsx
+   26:40   error    Unexpected any. Specify a different type                                                                                              @typescript-eslint/no-explicit-any
+   32:46   error    Unexpected any. Specify a different type                                                                                              @typescript-eslint/no-explicit-any
+   37:40   error    Unexpected any. Specify a different type                                                                                              @typescript-eslint/no-explicit-any
+   51:8    warning  React Hook useEffect has missing dependencies: 'fetchStats' and 'fetchUserLikes'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+  121:34   error    Unexpected any. Specify a different type                                                                                              @typescript-eslint/no-explicit-any
+  135:57   error    Expected an assignment or function call and instead saw an expression                                                                 @typescript-eslint/no-unused-expressions
+  144:18   error    'err' is defined but never used                                                                                                       @typescript-eslint/no-unused-vars
+  144:23   error    Unexpected any. Specify a different type                                                                                              @typescript-eslint/no-explicit-any
+  146:61   error    Expected an assignment or function call and instead saw an expression                                                                 @typescript-eslint/no-unused-expressions
+  163:67   error    Unexpected any. Specify a different type                                                                                              @typescript-eslint/no-explicit-any
+  163:93   error    Unexpected any. Specify a different type                                                                                              @typescript-eslint/no-explicit-any
+  163:121  error    Unexpected any. Specify a different type                                                                                              @typescript-eslint/no-explicit-any
+  169:23   error    Unexpected any. Specify a different type                                                                                              @typescript-eslint/no-explicit-any
+  177:49   error    Unexpected any. Specify a different type                                                                                              @typescript-eslint/no-explicit-any
+  190:23   error    Unexpected any. Specify a different type                                                                                              @typescript-eslint/no-explicit-any
+
+D:\afrgam\src\pages\Friends.tsx
+  34:8   warning  React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  72:25  error    Unexpected any. Specify a different type                                                                      @typescript-eslint/no-explicit-any
+
+D:\afrgam\src\pages\Live.tsx
+  256:52  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  @typescript-eslint/no-explicit-any
+  264:46  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  @typescript-eslint/no-explicit-any
+  272:30  error    Error: Cannot call impure function during render
+
+`Date.now` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+D:\afrgam\src\pages\Live.tsx:272:30
+  270 |
+  271 |     const videoRef = useRef<HTMLDivElement>(null);
+> 272 |     const mountedAt = useRef(Date.now());
+      |                              ^^^^^^^^^^ Cannot call impure function
+  273 |
+  274 |     useEffect(() => {
+  275 |         if (session) {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  react-hooks/purity
+  276:13  error    Error: Cannot access variable before it is declared
+
+`fetchComments` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+D:\afrgam\src\pages\Live.tsx:276:13
+  274 |     useEffect(() => {
+  275 |         if (session) {
+> 276 |             fetchComments();
+      |             ^^^^^^^^^^^^^ `fetchComments` accessed before it is declared
+  277 |             fetchLikes();
+  278 |
+  279 |             const chatSub = supabase
+
+D:\afrgam\src\pages\Live.tsx:369:5
+  367 |     };
+  368 |
+> 369 |     const fetchComments = async () => {
+      |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 370 |         const { data } = await supabase
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 371 |             .from('live_stream_comments')
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 372 |             .select('*, profiles:user_id(full_name, avatar_url)')
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 373 |             .eq('session_id', session.id)
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 374 |             .order('created_at', { ascending: true });
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 375 |         setComments(data || []);
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 376 |     };
+      | ^^^^^^^ `fetchComments` is declared here
+  377 |
+  378 |     const fetchCommentUser = async (newMsg: any) => {
+  379 |         const { data: profile } = await supabase                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 react-hooks/immutability
+  277:13  error    Error: Cannot access variable before it is declared
+
+`fetchLikes` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+D:\afrgam\src\pages\Live.tsx:277:13
+  275 |         if (session) {
+  276 |             fetchComments();
+> 277 |             fetchLikes();
+      |             ^^^^^^^^^^ `fetchLikes` accessed before it is declared
+  278 |
+  279 |             const chatSub = supabase
+  280 |                 .channel(`stream_interactions_${session.id}`)
+
+D:\afrgam\src\pages\Live.tsx:345:5
+  343 |     };
+  344 |
+> 345 |     const fetchLikes = async () => {
+      |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 346 |         const { count } = await supabase.from('live_stream_likes').select('*', { count: 'exact', head: true }).eq('session_id', session.id);
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 347 |         setLikesCount(count || 0);
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 348 |
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 349 |         if (user) {
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 350 |             const { data } = await supabase.from('live_stream_likes').select('id').match({ session_id: session.id, user_id: user.id }).maybeSingle();
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 351 |             setHasLiked(!!data);
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 352 |         }
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 353 |     };
+      | ^^^^^^^ `fetchLikes` is declared here
+  354 |
+  355 |     const handleToggleLike = async () => {
+  356 |         if (!user) return;  react-hooks/immutability
+  287:21  error    Error: Cannot access variable before it is declared
+
+`fetchCommentUser` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+D:\afrgam\src\pages\Live.tsx:287:21
+  285 |                     filter: `session_id=eq.${session.id}`
+  286 |                 }, (payload) => {
+> 287 |                     fetchCommentUser(payload.new);
+      |                     ^^^^^^^^^^^^^^^^ `fetchCommentUser` accessed before it is declared
+  288 |                 })
+  289 |                 .on('postgres_changes', {
+  290 |                     event: '*',
+
+D:\afrgam\src\pages\Live.tsx:378:5
+  376 |     };
+  377 |
+> 378 |     const fetchCommentUser = async (newMsg: any) => {
+      |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 379 |         const { data: profile } = await supabase
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 380 |             .from('profiles')
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 381 |             .select('full_name, avatar_url')
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 382 |             .eq('id', newMsg.user_id)
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 383 |             .single();
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 384 |         setComments(prev => [...prev, { ...newMsg, profiles: profile }]);
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 385 |     };
+      | ^^^^^^^ `fetchCommentUser` is declared here
+  386 |
+  387 |     useEffect(() => {
+  388 |         chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        react-hooks/immutability
+  320:60  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  @typescript-eslint/no-explicit-any
+  322:29  error    Error: Cannot access variable before it is declared
+
+`showJoinNotice` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+D:\afrgam\src\pages\Live.tsx:322:29
+  320 |                         const newUser = newPresences[0] as any;
+  321 |                         if (newUser.key !== user?.id) {
+> 322 |                             showJoinNotice("Someone joined!"); // Ideally fetch name
+      |                             ^^^^^^^^^^^^^^ `showJoinNotice` accessed before it is declared
+  323 |                         }
+  324 |                     }
+  325 |                 })
+
+D:\afrgam\src\pages\Live.tsx:340:5
+  338 |     }, [session.id]);
+  339 |
+> 340 |     const showJoinNotice = (msg: string) => {
+      |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 341 |         setJoinNotice(msg);
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 342 |         setTimeout(() => setJoinNotice(null), 3000);
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 343 |     };
+      | ^^^^^^^ `showJoinNotice` is declared here
+  344 |
+  345 |     const fetchLikes = async () => {
+  346 |         const { count } = await supabase.from('live_stream_likes').select('*', { count: 'exact', head: true }).eq('session_id', session.id);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             react-hooks/immutability
+  338:8   warning  React Hook useEffect has missing dependencies: 'fetchComments', 'fetchLikes', 'isHost', 'onClose', 'session', and 'user?.id'. Either include them or remove the dependency array. If 'onClose' changes too often, find the parent component that defines it and wrap that definition in useCallback                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       react-hooks/exhaustive-deps
+  378:45  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  @typescript-eslint/no-explicit-any
+  403:9   error    Error: Cannot access variable before it is declared
+
+`initAgora` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+D:\afrgam\src\pages\Live.tsx:403:9
+  401 |
+  402 |     useEffect(() => {
+> 403 |         initAgora();
+      |         ^^^^^^^^^ `initAgora` accessed before it is declared
+  404 |
+  405 |         const handleUnload = () => {
+  406 |             if (isHost) {
+
+D:\afrgam\src\pages\Live.tsx:429:5
+  427 |     }, []);
+  428 |
+> 429 |     const initAgora = async () => {
+      |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 430 |         if (!AGORA_APP_ID || AGORA_APP_ID === "PASTE_YOUR_AGORA_APP_ID_HERE") {
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 431 |             console.warn("Agora App ID not found");
+      ΓÇª
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 461 |         setJoined(true);
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 462 |     };
+      | ^^^^^^^ `initAgora` is declared here
+  463 |
+  464 |     useEffect(() => {
+  465 |         if (!isHost && remoteUsers.length > 0 && videoRef.current) {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     react-hooks/immutability
+  423:51  warning  The ref value 'mountedAt.current' will likely have changed by the time this effect cleanup function runs. If this ref points to a node rendered by React, copy 'mountedAt.current' to a variable inside the effect, and use that variable in the cleanup function                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         react-hooks/exhaustive-deps
+  424:17  error    Error: Cannot access variable before it is declared
+
+`endSession` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+D:\afrgam\src\pages\Live.tsx:424:17
+  422 |             // This prevents React Strict Mode from deleting the session on its initial test-mount
+  423 |             if (isHost && (Date.now() - mountedAt.current > 2000)) {
+> 424 |                 endSession();
+      |                 ^^^^^^^^^^ `endSession` accessed before it is declared
+  425 |             }
+  426 |         };
+  427 |     }, []);
+
+D:\afrgam\src\pages\Live.tsx:497:5
+  495 |     };
+  496 |
+> 497 |     const endSession = async () => {
+      |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 498 |         if (isHost) {
+      | ^^^^^^^^^^^^^^^^^^^^^
+> 499 |             await supabase.from('live_sessions').delete().eq('id', session.id);
+      | ^^^^^^^^^^^^^^^^^^^^^
+> 500 |         }
+      | ^^^^^^^^^^^^^^^^^^^^^
+> 501 |         onClose();
+      | ^^^^^^^^^^^^^^^^^^^^^
+> 502 |     };
+      | ^^^^^^^ `endSession` is declared here
+  503 |
+  504 |     return (
+  505 |         <motion.div                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              react-hooks/immutability
+  427:8   warning  React Hook useEffect has missing dependencies: 'endSession', 'initAgora', 'isHost', 'localAudioTrack', 'localVideoTrack', and 'session.id'. Either include them or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            react-hooks/exhaustive-deps
+  643:61  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  @typescript-eslint/no-explicit-any
+
+D:\afrgam\src\pages\Messages.tsx
+   61:29   error    Unexpected any. Specify a different type                                                                                                                                   @typescript-eslint/no-explicit-any
+   90:8    warning  React Hook useEffect has missing dependencies: 'fetchConversations', 'handleDirectMessage', and 'subscribeToMessages'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+  126:8    warning  React Hook useEffect has missing dependencies: 'fetchMessages' and 'markMessagesAsRead'. Either include them or remove the dependency array                                react-hooks/exhaustive-deps
+  312:27   error    Unexpected any. Specify a different type                                                                                                                                   @typescript-eslint/no-explicit-any
+  578:100  error    '_' is defined but never used                                                                                                                                              @typescript-eslint/no-unused-vars
+
+D:\afrgam\src\pages\Notifications.tsx
+  12:15  error    Unexpected any. Specify a different type                                                                               @typescript-eslint/no-explicit-any
+  43:8   warning  React Hook useEffect has a missing dependency: 'fetchNotifications'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+D:\afrgam\src\pages\PostPage.tsx
+  38:8  warning  React Hook useEffect has missing dependencies: 'fetchPost' and 'fetchUserLikes'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+
+D:\afrgam\src\pages\Reels.tsx
+  11:40  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\afrgam\src\pages\Settings.tsx
+   33:8   warning  React Hook useEffect has a missing dependency: 'fetchProfile'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+   84:23  error    Unexpected any. Specify a different type                                                                         @typescript-eslint/no-explicit-any
+  143:25  error    Unexpected any. Specify a different type                                                                         @typescript-eslint/no-explicit-any
+
+D:\afrgam\src\pages\SocialFeed.tsx
+   88:9    error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+D:\afrgam\src\pages\SocialFeed.tsx:88:9
+  86 |
+  87 |     useEffect(() => {
+> 88 |         setProgress(0);
+     |         ^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  89 |         timerRef.current = setInterval(() => {
+  90 |             setProgress(p => {
+  91 |                 if (p >= 100) { clearInterval(timerRef.current!); next(); return 100; }  react-hooks/set-state-in-effect
+   96:8    warning  React Hook useEffect has a missing dependency: 'next'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 react-hooks/exhaustive-deps
+  369:54   error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+  397:8    warning  React Hook useEffect has a missing dependency: 'fetchUserLikes'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       react-hooks/exhaustive-deps
+  436:40   error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+  479:23   error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+  530:13   error    Expected an assignment or function call and instead saw an expression                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   @typescript-eslint/no-unused-expressions
+  541:23   error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+  543:61   error    Expected an assignment or function call and instead saw an expression                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   @typescript-eslint/no-unused-expressions
+  557:28   error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+  572:67   error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+  572:93   error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+  572:121  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+  573:48   error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+  579:23   error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+  596:23   error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                @typescript-eslint/no-explicit-any
+
+D:\afrgam\src\pages\UserProfile.tsx
+   28:15  error    Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+   61:8   warning  React Hook useEffect has a missing dependency: 'fetchProfileData'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  176:42  error    Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+  250:55  error    Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+
+Γ£û 129 problems (108 errors, 21 warnings)
+  2 errors and 0 warnings potentially fixable with the `--fix` option.
+

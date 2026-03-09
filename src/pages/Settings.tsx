@@ -10,6 +10,9 @@ export function Settings() {
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState(false);
     const [fullName, setFullName] = useState('');
+    const [email, setEmail] = useState('');
+    const [phoneNumber, setPhoneNumber] = useState('');
+    const [withdrawalNumber, setWithdrawalNumber] = useState('');
     const [avatarUrl, setAvatarUrl] = useState('');
     const [isVerified, setIsVerified] = useState(false);
     const [verificationStatus, setVerificationStatus] = useState<'none' | 'pending' | 'approved' | 'rejected'>('none');
@@ -33,7 +36,7 @@ export function Settings() {
         try {
             const { data, error } = await supabase
                 .from('profiles')
-                .select('full_name, avatar_url, is_verified')
+                .select('full_name, avatar_url, is_verified, email, phone_number, withdrawal_number')
                 .eq('id', user?.id)
                 .single();
 
@@ -42,6 +45,9 @@ export function Settings() {
                 setFullName(data.full_name || '');
                 setAvatarUrl(data.avatar_url || '');
                 setIsVerified(data.is_verified || false);
+                setEmail(data.email || '');
+                setPhoneNumber(data.phone_number || '');
+                setWithdrawalNumber(data.withdrawal_number || '');
             }
 
             // Also fetch verification request status and rejection reason
@@ -70,7 +76,10 @@ export function Settings() {
         try {
             const { error } = await supabase
                 .from('verification_requests')
-                .upsert({ user_id: user?.id, status: 'pending', updated_at: new Date() });
+                .upsert(
+                    { user_id: user?.id, status: 'pending', updated_at: new Date() },
+                    { onConflict: 'user_id' }
+                );
 
             if (error) throw error;
             setVerificationStatus('pending');
@@ -92,6 +101,9 @@ export function Settings() {
             const updates = {
                 id: user?.id,
                 full_name: fullName,
+                email: email,
+                phone_number: phoneNumber,
+                withdrawal_number: withdrawalNumber,
                 avatar_url: avatarUrl,
                 updated_at: new Date(),
             };
@@ -190,6 +202,27 @@ export function Settings() {
                                     value={fullName}
                                     onChange={(e) => setFullName(e.target.value)}
                                     placeholder="Full Name (how you appear to others)"
+                                    className="w-full bg-white/5 border border-white/10 rounded-2xl py-3 px-6 focus:ring-2 focus:ring-primary/50 focus:border-primary outline-none text-white transition-all font-medium"
+                                />
+                                <input
+                                    type="email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    placeholder="Email Address"
+                                    className="w-full bg-white/5 border border-white/10 rounded-2xl py-3 px-6 focus:ring-2 focus:ring-primary/50 focus:border-primary outline-none text-white transition-all font-medium"
+                                />
+                                <input
+                                    type="text"
+                                    value={phoneNumber}
+                                    onChange={(e) => setPhoneNumber(e.target.value)}
+                                    placeholder="Phone Number (e.g. 07XXXXXXXX)"
+                                    className="w-full bg-white/5 border border-white/10 rounded-2xl py-3 px-6 focus:ring-2 focus:ring-primary/50 focus:border-primary outline-none text-white transition-all font-medium"
+                                />
+                                <input
+                                    type="text"
+                                    value={withdrawalNumber}
+                                    onChange={(e) => setWithdrawalNumber(e.target.value)}
+                                    placeholder="Withdrawal Number (Mobile Money)"
                                     className="w-full bg-white/5 border border-white/10 rounded-2xl py-3 px-6 focus:ring-2 focus:ring-primary/50 focus:border-primary outline-none text-white transition-all font-medium"
                                 />
                             </div>

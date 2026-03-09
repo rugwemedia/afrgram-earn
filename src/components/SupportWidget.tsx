@@ -147,7 +147,7 @@ export function SupportWidget() {
     };
 
     return (
-        <div ref={widgetRef} className="fixed bottom-6 right-6 z-[200] flex flex-col items-end gap-3">
+        <div ref={widgetRef} className="fixed bottom-24 md:bottom-6 right-4 md:right-6 z-[200] flex flex-col items-end gap-3">
 
             {/* ── Widget Panel ── */}
             <AnimatePresence>
@@ -418,16 +418,16 @@ export function SupportWidget() {
                 whileHover={{ scale: 1.07 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setOpen(v => !v)}
-                className="relative w-14 h-14 bg-primary rounded-2xl shadow-[0_0_30px_rgba(59,130,246,0.5)] flex items-center justify-center text-white"
+                className="relative w-12 h-12 bg-primary rounded-2xl shadow-[0_0_30px_rgba(59,130,246,0.5)] flex items-center justify-center text-white"
             >
                 <AnimatePresence mode="wait">
                     {open ? (
                         <motion.div key="close" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }}>
-                            <X size={24} />
+                            <X size={20} />
                         </motion.div>
                     ) : (
                         <motion.div key="open" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }}>
-                            <Headphones size={24} />
+                            <Headphones size={20} />
                         </motion.div>
                     )}
                 </AnimatePresence>

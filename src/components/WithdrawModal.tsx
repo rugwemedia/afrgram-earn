@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Phone, DollarSign, Clock, Check, AlertCircle } from 'lucide-react';
 
@@ -31,6 +31,24 @@ export function WithdrawModal({ isOpen, onClose, balance }: WithdrawModalProps) 
         const gmtHour = now.getUTCHours();
         return gmtHour >= 7 && gmtHour < 19;
     };
+
+    // Pre-fill phone if available in profile
+
+    useEffect(() => {
+        if (isOpen && user) {
+            const fetchProfile = async () => {
+                const { data } = await supabase
+                    .from('profiles')
+                    .select('withdrawal_number')
+                    .eq('id', user.id)
+                    .single();
+                if (data?.withdrawal_number) {
+                    setPhone(data.withdrawal_number);
+                }
+            };
+            fetchProfile();
+        }
+    }, [isOpen, user]);
 
     const calculateTotal = () => {
         const val = parseFloat(amount) || 0;
